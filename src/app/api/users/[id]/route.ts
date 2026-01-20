@@ -10,9 +10,6 @@ import {
   forbiddenResponse,
   serverErrorResponse,
 } from '@/lib/api/response'
-import { Database } from '@/types/database'
-
-type ProfileUpdate = Database['public']['Tables']['profiles']['Update']
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -83,7 +80,6 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
     
     const supabase = await createClient()
-    const adminClient = createAdminClient()
     const body = await request.json()
     
     // Kullanıcı var mı kontrol
@@ -117,7 +113,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     
     // Username değişiyorsa unique kontrolü
     if (body.username && body.username.trim().toLowerCase() !== existing.username) {
-      const { data: duplicate } = await adminClient
+      const { data: duplicate } = await supabase
         .from('profiles')
         .select('id')
         .eq('username', body.username.trim().toLowerCase())
@@ -129,8 +125,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       }
     }
     
-    // Update object oluştur (typed)
-    const updateData: ProfileUpdate = {}
+    // Update object oluştur
+    const updateData: {
+      username?: string
+      ad_soyad?: string
+      role?: 'admin' | 'normal'
+    } = {}
     
     if (body.username !== undefined) updateData.username = body.username.trim().toLowerCase()
     if (body.ad_soyad !== undefined) updateData.ad_soyad = body.ad_soyad.trim()
@@ -141,8 +141,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return errorResponse('Güncellenecek alan bulunamadı')
     }
     
-    // Update
-    const { data, error } = await adminClient
+    // Update (normal client ile - RLS policies ayarlanmalı)
+    const { data, error } = await supabase
       .from('profiles')
       .update(updateData)
       .eq('id', id)
