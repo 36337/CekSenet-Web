@@ -4,8 +4,8 @@
 // ÇekSenet Web - Evrak Detay Sayfası
 // ============================================
 
-import { useEffect, useState, useCallback } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useEffect, useState, useCallback, use } from 'react'
+import { useRouter } from 'next/navigation'
 import { Heading } from '@/components/ui/heading'
 import { Text } from '@/components/ui/text'
 import { Button } from '@/components/ui/button'
@@ -103,10 +103,10 @@ function getGecerliDurumlar(mevcutDurum: string): EvrakDurumu[] {
 // Component
 // ============================================
 
-export default function EvrakDetayPage() {
-  const params = useParams()
+export default function EvrakDetayPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const evrakId = Number(params.id)
+  const { id } = use(params)
+  const evrakId = Number(id)
 
   // State
   const [evrak, setEvrak] = useState<EvrakDetay | null>(null)
