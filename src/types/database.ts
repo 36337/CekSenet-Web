@@ -339,3 +339,14 @@ export type EvrakFotograf = Database['public']['Tables']['evrak_fotograflari']['
 export type Kredi = Database['public']['Tables']['krediler']['Row']
 export type KrediTaksit = Database['public']['Tables']['kredi_taksitler']['Row']
 export type Ayar = Database['public']['Tables']['ayarlar']['Row']
+
+// Döviz Kurları (ayrı tablo)
+export interface DovizKuru {
+  id: number
+  tarih: string
+  usd: number | null
+  eur: number | null
+  gbp: number | null
+  chf: number | null
+  created_at: string
+}
