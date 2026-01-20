@@ -74,31 +74,24 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     
     // Toplam kalan borç hesapla
     const toplamKalan = bekleyenTaksitler.reduce((sum, t) => sum + t.tutar, 0)
-    const taksitIds = bekleyenTaksitler.map(t => t.id)
     
     // Tüm bekleyen taksitleri öde
-    const { error: updateError } = await supabase
-      .from('kredi_taksitler')
-      .update({
-        durum: 'odendi',
-        odeme_tarihi: odemeTarihi,
-        odenen_tutar: supabase.rpc ? undefined : undefined, // tutar kolonunu koruyoruz
-        notlar: notlar
-      })
-      .in('id', taksitIds)
-    
-    if (updateError) {
-      console.error('Taksit güncelleme hatası:', updateError)
-      return serverErrorResponse('Taksitler güncellenirken hata oluştu')
-    }
-    
-    // Her taksit için odenen_tutar'ı kendi tutar'ına eşitle
-    // (Supabase'de tek sorguda bunu yapamıyoruz, o yüzden ayrı güncelleme)
+    // Her taksit için odenen_tutar'ı kendi tutar'ına eşitleyerek güncelle
     for (const taksit of bekleyenTaksitler) {
-      await supabase
+      const { error: updateError } = await supabase
         .from('kredi_taksitler')
-        .update({ odenen_tutar: taksit.tutar })
+        .update({
+          durum: 'odendi',
+          odeme_tarihi: odemeTarihi,
+          odenen_tutar: taksit.tutar,
+          notlar: notlar
+        })
         .eq('id', taksit.id)
+      
+      if (updateError) {
+        console.error('Taksit güncelleme hatası:', updateError)
+        return serverErrorResponse('Taksitler güncellenirken hata oluştu')
+      }
     }
     
     // Krediyi erken kapandı olarak işaretle
