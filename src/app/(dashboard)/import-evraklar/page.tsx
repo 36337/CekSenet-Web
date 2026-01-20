@@ -294,12 +294,14 @@ export default function EvrakImportPage() {
         throw new Error(result.error || 'Dosya işlenemedi')
       }
 
-      setParsedRows(result.data.satirlar || [])
-      setParseSummary(result.data.ozet || null)
+      // API { success: true, data: { success, data (rows), ozet } } döndürüyor
+      const parseResult = result.data
+      setParsedRows(parseResult.data || [])
+      setParseSummary(parseResult.ozet || null)
 
       // Varsayılan olarak geçerli satırları seç
       const validRowNumbers = new Set<number>(
-        (result.data.satirlar || []).filter((r: ParsedRow) => r.gecerli).map((r: ParsedRow) => r.satir)
+        (parseResult.data || []).filter((r: ParsedRow) => r.gecerli).map((r: ParsedRow) => r.satir)
       )
       setSelectedRows(validRowNumbers)
 
