@@ -1,11 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
-import { Database } from '@/types/database'
 
 /**
  * Service Role Key ile Supabase Admin Client
  * 
  * DİKKAT: Bu client sadece server-side'da kullanılmalı!
- * Admin işlemleri için (kullanıcı oluşturma, silme vb.)
+ * Sadece Auth Admin API işlemleri için (kullanıcı oluşturma, silme)
+ * Database işlemleri için normal server client kullanılmalı
  */
 export function createAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
@@ -15,7 +15,8 @@ export function createAdminClient() {
     throw new Error('Supabase URL veya Service Role Key tanımlı değil')
   }
 
-  return createClient<Database>(supabaseUrl, supabaseServiceKey, {
+  // Database tipi yok - sadece Auth API için kullanılacak
+  return createClient(supabaseUrl, supabaseServiceKey, {
     auth: {
       autoRefreshToken: false,
       persistSession: false,

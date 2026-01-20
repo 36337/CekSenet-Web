@@ -65,6 +65,7 @@ export async function POST(request: NextRequest) {
   try {
     await requireAdmin()
     
+    const supabase = await createClient()
     const body = await request.json()
     
     // Validasyonlar
@@ -87,13 +88,10 @@ export async function POST(request: NextRequest) {
     const email = body.email.trim().toLowerCase()
     const username = body.username.trim().toLowerCase()
     const adSoyad = body.ad_soyad.trim()
-    const role = body.role === 'admin' ? 'admin' : 'normal'
+    const role: 'admin' | 'normal' = body.role === 'admin' ? 'admin' : 'normal'
     
-    // Admin client ile işlem yap
-    const adminClient = createAdminClient()
-    
-    // Username unique kontrolü
-    const { data: existingUsername } = await adminClient
+    // Username unique kontrolü (normal client ile)
+    const { data: existingUsername } = await supabase
       .from('profiles')
       .select('id')
       .eq('username', username)
@@ -102,6 +100,9 @@ export async function POST(request: NextRequest) {
     if (existingUsername) {
       return errorResponse('Bu kullanıcı adı zaten kullanılıyor')
     }
+    
+    // Admin client sadece Auth API için
+    const adminClient = createAdminClient()
     
     // Supabase Auth'a kullanıcı oluştur
     const { data: authData, error: authError } = await adminClient.auth.admin.createUser({
@@ -128,8 +129,8 @@ export async function POST(request: NextRequest) {
       return serverErrorResponse('Kullanıcı oluşturulamadı')
     }
     
-    // Profiles tablosuna ekle
-    const { data: profile, error: profileError } = await adminClient
+    // Profiles tablosuna ekle (normal client ile)
+    const { data: profile, error: profileError } = await supabase
       .from('profiles')
       .insert({
         id: authData.user.id,
