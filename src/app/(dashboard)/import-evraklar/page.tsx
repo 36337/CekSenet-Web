@@ -298,7 +298,7 @@ export default function EvrakImportPage() {
       setParseSummary(result.data.ozet || null)
 
       // Varsayılan olarak geçerli satırları seç
-      const validRowNumbers = new Set(
+      const validRowNumbers = new Set<number>(
         (result.data.satirlar || []).filter((r: ParsedRow) => r.gecerli).map((r: ParsedRow) => r.satir)
       )
       setSelectedRows(validRowNumbers)
@@ -329,14 +329,14 @@ export default function EvrakImportPage() {
 
   const handleToggleAll = () => {
     if (selectedRows.size === parsedRows.length) {
-      setSelectedRows(new Set())
+      setSelectedRows(new Set<number>())
     } else {
-      setSelectedRows(new Set(parsedRows.map((r) => r.satir)))
+      setSelectedRows(new Set<number>(parsedRows.map((r) => r.satir)))
     }
   }
 
   const handleSelectValid = () => {
-    const validRowNumbers = new Set(parsedRows.filter((r) => r.gecerli).map((r) => r.satir))
+    const validRowNumbers = new Set<number>(parsedRows.filter((r) => r.gecerli).map((r) => r.satir))
     setSelectedRows(validRowNumbers)
   }
 
@@ -372,7 +372,7 @@ export default function EvrakImportPage() {
     setCurrentStep('template')
     setParsedRows([])
     setParseSummary(null)
-    setSelectedRows(new Set())
+    setSelectedRows(new Set<number>())
     setImportResult(null)
     setUploadError(null)
     setSelectedFile(null)
