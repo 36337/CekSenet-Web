@@ -31,13 +31,12 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     
     const supabase = await createClient()
     
-    // Kredi bilgisi (banka ve oluşturan kullanıcı ile)
+    // Kredi bilgisi (banka ile)
     const { data: kredi, error: krediError } = await supabase
       .from('krediler')
       .select(`
         *,
-        banka:bankalar(id, ad),
-        olusturan:users(id, ad_soyad)
+        banka:bankalar(id, ad)
       `)
       .eq('id', krediId)
       .single()
