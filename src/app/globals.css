@@ -6,10 +6,13 @@
   --color-sidebar-hover: #bae6fd;
   --color-sidebar-active: #7dd3fc;
   --color-sidebar-text: #0c4a6e;
+  --color-sidebar-text-muted: #0369a1;
+  --color-sidebar-border: #bae6fd;
   
   /* İçerik Renkleri */
   --color-content-bg: #f1f5f9;
   --color-card-bg: #f8f9fa;
+  --color-card-border: #e2e8f0;
   
   /* Durum Badge Renkleri */
   --color-status-portfoy: #3b82f6;
