@@ -255,7 +255,7 @@ export default function EvraklarPage() {
           </Text>
         </div>
         <div className="flex gap-2">
-          <Button outline onClick={() => router.push('/evraklar/import')}>
+          <Button outline onClick={() => router.push('/import-evraklar')}>
             <DocumentArrowUpIcon className="h-5 w-5" />
             Excel Import
           </Button>
