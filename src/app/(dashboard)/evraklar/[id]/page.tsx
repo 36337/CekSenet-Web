@@ -151,7 +151,8 @@ export default function EvrakDetayPage({ params }: { params: Promise<{ id: strin
       const hareketResponse = await fetch(`/api/evraklar/${evrakId}/gecmis`)
       if (hareketResponse.ok) {
         const hareketResult = await hareketResponse.json()
-        setHareketler(hareketResult.data || [])
+        // API { data: { hareketler: [...] } } döndürüyor
+        setHareketler(hareketResult.data?.hareketler || [])
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Evrak yüklenirken hata oluştu')
