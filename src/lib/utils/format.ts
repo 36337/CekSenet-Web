@@ -98,3 +98,77 @@ export function getDurumColor(durum: string): 'blue' | 'violet' | 'orange' | 'gr
   }
   return colors[durum] || 'zinc'
 }
+
+// ============================================
+// Cari Helpers
+// ============================================
+
+/**
+ * Cari tipi label'ı
+ */
+export function getCariTipLabel(tip: string): string {
+  return tip === 'musteri' ? 'Müşteri' : 'Tedarikçi'
+}
+
+/**
+ * Cari tip badge rengi
+ */
+export function getCariTipColor(tip: string): 'green' | 'blue' | 'zinc' {
+  const colors: Record<string, 'green' | 'blue' | 'zinc'> = {
+    musteri: 'green',
+    tedarikci: 'blue',
+  }
+  return colors[tip] || 'zinc'
+}
+
+// ============================================
+// Kredi Helpers
+// ============================================
+
+/**
+ * Kredi durumu label'ı
+ */
+export function getKrediDurumLabel(durum: string): string {
+  const labels: Record<string, string> = {
+    aktif: 'Aktif',
+    kapandi: 'Kapandı',
+    erken_kapandi: 'Erken Kapandı',
+  }
+  return labels[durum] || durum
+}
+
+/**
+ * Kredi durum badge rengi
+ */
+export function getKrediDurumColor(durum: string): 'green' | 'zinc' | 'blue' {
+  const colors: Record<string, 'green' | 'zinc' | 'blue'> = {
+    aktif: 'green',
+    kapandi: 'zinc',
+    erken_kapandi: 'blue',
+  }
+  return colors[durum] || 'zinc'
+}
+
+/**
+ * Taksit durumu label'ı
+ */
+export function getTaksitDurumLabel(durum: string): string {
+  const labels: Record<string, string> = {
+    bekliyor: 'Bekliyor',
+    odendi: 'Ödendi',
+    gecikti: 'Gecikti',
+  }
+  return labels[durum] || durum
+}
+
+/**
+ * Taksit durum badge rengi
+ */
+export function getTaksitDurumColor(durum: string): 'yellow' | 'green' | 'red' | 'zinc' {
+  const colors: Record<string, 'yellow' | 'green' | 'red' | 'zinc'> = {
+    bekliyor: 'yellow',
+    odendi: 'green',
+    gecikti: 'red',
+  }
+  return colors[durum] || 'zinc'
+}
