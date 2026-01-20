@@ -1,7 +1,7 @@
 import { NextRequest } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
-import { requireAdmin, isAuthError, getAuthUser } from '@/lib/api/auth'
+import { requireAdmin, isAuthError } from '@/lib/api/auth'
 import {
   successResponse,
   errorResponse,
@@ -10,6 +10,9 @@ import {
   forbiddenResponse,
   serverErrorResponse,
 } from '@/lib/api/response'
+import { Database } from '@/types/database'
+
+type ProfileUpdate = Database['public']['Tables']['profiles']['Update']
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -126,8 +129,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       }
     }
     
-    // Update object oluştur
-    const updateData: Record<string, unknown> = {}
+    // Update object oluştur (typed)
+    const updateData: ProfileUpdate = {}
     
     if (body.username !== undefined) updateData.username = body.username.trim().toLowerCase()
     if (body.ad_soyad !== undefined) updateData.ad_soyad = body.ad_soyad.trim()

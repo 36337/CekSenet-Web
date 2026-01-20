@@ -9,6 +9,9 @@ import {
   forbiddenResponse,
   serverErrorResponse,
 } from '@/lib/api/response'
+import { Database } from '@/types/database'
+
+type BankaUpdate = Database['public']['Tables']['bankalar']['Update']
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -123,8 +126,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       }
     }
     
-    // Update object oluştur
-    const updateData: Record<string, unknown> = {}
+    // Update object oluştur (typed)
+    const updateData: BankaUpdate = {}
     
     if (body.ad !== undefined) updateData.ad = body.ad.trim()
     if (body.aktif !== undefined) updateData.aktif = body.aktif

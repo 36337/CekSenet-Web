@@ -9,6 +9,9 @@ import {
   forbiddenResponse,
   serverErrorResponse,
 } from '@/lib/api/response'
+import { Database } from '@/types/database'
+
+type CariUpdate = Database['public']['Tables']['cariler']['Update']
 
 interface RouteParams {
   params: Promise<{ id: string }>
@@ -111,8 +114,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       return errorResponse('Geçerli bir tip seçiniz (musteri/tedarikci)')
     }
     
-    // Update object oluştur
-    const updateData: Record<string, unknown> = {
+    // Update object oluştur (typed)
+    const updateData: CariUpdate = {
       updated_at: new Date().toISOString(),
     }
     
