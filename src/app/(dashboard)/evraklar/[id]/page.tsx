@@ -41,6 +41,7 @@ import {
   CheckCircleIcon,
 } from '@heroicons/react/20/solid'
 import { formatCurrency, formatDate, getDurumLabel, getDurumColor, getEvrakTipiLabel } from '@/lib/utils/format'
+import EvrakFotograflar from '@/components/evrak/EvrakFotograflar'
 
 // ============================================
 // Types
@@ -71,6 +72,17 @@ interface EvrakHareket {
   aciklama: string | null
   created_at: string
   kullanici_adi?: string
+}
+
+interface Fotograf {
+  id: number
+  evrak_id: number
+  dosya_adi: string
+  storage_path: string
+  dosya_boyutu: number | null
+  mime_type: string | null
+  url: string | null
+  created_at: string
 }
 
 type EvrakDurumu = 'portfoy' | 'bankada' | 'ciro' | 'tahsil' | 'karsiliksiz'
@@ -111,6 +123,7 @@ export default function EvrakDetayPage({ params }: { params: Promise<{ id: strin
   // State
   const [evrak, setEvrak] = useState<EvrakDetay | null>(null)
   const [hareketler, setHareketler] = useState<EvrakHareket[]>([])
+  const [fotograflar, setFotograflar] = useState<Fotograf[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -127,6 +140,18 @@ export default function EvrakDetayPage({ params }: { params: Promise<{ id: strin
   // ============================================
   // Data Fetching
   // ============================================
+
+  const fetchFotograflar = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/evraklar/${evrakId}/fotograflar`)
+      if (response.ok) {
+        const result = await response.json()
+        setFotograflar(result.data || [])
+      }
+    } catch (err) {
+      console.error('Fotoğraf yükleme hatası:', err)
+    }
+  }, [evrakId])
 
   const fetchEvrakDetay = useCallback(async () => {
     if (!evrakId || isNaN(evrakId)) {
@@ -151,15 +176,18 @@ export default function EvrakDetayPage({ params }: { params: Promise<{ id: strin
       const hareketResponse = await fetch(`/api/evraklar/${evrakId}/gecmis`)
       if (hareketResponse.ok) {
         const hareketResult = await hareketResponse.json()
-        // API { data: { hareketler: [...] } } döndürüyor
         setHareketler(hareketResult.data?.hareketler || [])
       }
+
+      // Fotoğraflar
+      await fetchFotograflar()
+
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Evrak yüklenirken hata oluştu')
     } finally {
       setIsLoading(false)
     }
-  }, [evrakId])
+  }, [evrakId, fetchFotograflar])
 
   useEffect(() => {
     fetchEvrakDetay()
@@ -401,6 +429,15 @@ export default function EvrakDetayPage({ params }: { params: Promise<{ id: strin
           <DescriptionTerm>Son Güncelleme</DescriptionTerm>
           <DescriptionDetails>{formatDateTime(evrak.updated_at)}</DescriptionDetails>
         </DescriptionList>
+      </div>
+
+      {/* Fotoğraflar */}
+      <div className="rounded-lg border border-zinc-200 bg-white p-6">
+        <EvrakFotograflar
+          evrakId={evrakId}
+          fotograflar={fotograflar}
+          onRefresh={fetchFotograflar}
+        />
       </div>
 
       {/* Hareket Geçmişi */}
