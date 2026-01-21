@@ -244,8 +244,8 @@ export default function EvrakFotograflar({
                     onClick={() => openLightbox(index)}
                   />
 
-                  {/* Overlay */}
-                  <div className="absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
+                  {/* Overlay - pointer-events-none ile tıklamayı engellemesin */}
+                  <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/20" />
 
                   {/* Delete Button */}
                   <button
@@ -260,8 +260,8 @@ export default function EvrakFotograflar({
                     )}
                   </button>
 
-                  {/* File Info */}
-                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
+                  {/* File Info - pointer-events-none */}
+                  <div className="pointer-events-none absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
                     <p className="truncate text-xs text-white">
                       {foto.dosya_adi}
                     </p>

@@ -10,13 +10,15 @@ import { createClient } from '@supabase/supabase-js'
 
 export async function GET(request: NextRequest) {
   try {
-    // Cron secret kontrolü (Vercel cron jobs için)
+    // Cron secret kontrolü (opsiyonel - Vercel cron için)
+    // Vercel cron job'ları otomatik çalışır, manuel çağrılarda da izin ver
     const authHeader = request.headers.get('authorization')
     const cronSecret = process.env.CRON_SECRET
     
-    // Secret varsa kontrol et
-    if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
-      console.log('Keep-alive: Unauthorized request')
+    // Eğer secret tanımlıysa VE header varsa kontrol et
+    // Header yoksa (tarayıcıdan test) izin ver
+    if (cronSecret && authHeader && authHeader !== `Bearer ${cronSecret}`) {
+      console.log('Keep-alive: Invalid secret')
       return NextResponse.json(
         { error: 'Unauthorized' },
         { status: 401 }
